@@ -1,11 +1,29 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useEffect } from 'react';
+import {
+  useDispatch, useSelector,
+} from 'react-redux';
+import {
+  HELLO_REQUEST,
+} from '../redux/reducers/newsReducer';
+import Layout from '../components/Layout';
+
 
 const Index = () => {
-  console.log('index');
+  // console.log('index');
+  const hello = useSelector((state) => state.news);
+  // console.log(hello);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: HELLO_REQUEST });
+  }, []);
   return (
-    <div>
-      뉴스페이지
-    </div>
+    <Layout>
+      {hello.hello === ''
+        ? 'loading'
+        : hello.hello}
+    </Layout>
   );
 };
 
