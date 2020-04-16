@@ -1,19 +1,29 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, call } from 'redux-saga/effects';
+import axios from 'axios';
 import {
-  HELLO_REQUEST, HELLO_REQUEST_STARTED,
+  FETCH_NEWS_DATA_REQUEST, FETCH_NEWS_DATA_REQUEST_STARTED,
+  FETCH_NEWS_DATA_SUCCESS, FETCH_NEWS_DATA_FAIL,
 } from '../reducers/newsReducer';
-// import axios from 'axios';
+import newsDataUrl from '../../lib/api';
 
-export const hello = function* hello() {
+export const fetchNewsData = function* fetchNewsData(action) {
   try {
-    const myName = '박한솔';
-    console.log(myName);
-    yield put({ type: HELLO_REQUEST_STARTED, value: myName });
+    yield put({ type: FETCH_NEWS_DATA_REQUEST_STARTED });
+    const { currentPage } = action;
+    // console.log(currentPage);
+    let q;
+    let from;
+    let to;
+
+    const url = newsDataUrl(q, currentPage, from, to);
+    const data = yield call([axios, 'get'], url);
+    const result = data.data;
+    yield put({ type: FETCH_NEWS_DATA_SUCCESS, result, currentPage });
   } catch (e) {
-    yield put();
+    yield put({ type: FETCH_NEWS_DATA_FAIL });
   }
 };
 
-export const watchHello = function* watchHello() {
-  yield takeEvery(HELLO_REQUEST, hello);
+export const watchNewsData = function* watchNewsData() {
+  yield takeEvery(FETCH_NEWS_DATA_REQUEST, fetchNewsData);
 };

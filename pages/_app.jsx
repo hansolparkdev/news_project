@@ -4,11 +4,20 @@ import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import { Provider } from 'react-redux';
 // import PropTypes from 'prop-types';
+import { createGlobalStyle } from 'styled-components';
 import store from '../redux/store';
+
+const GlobalStyle = createGlobalStyle`
+  *{
+      margin: 0;
+      padding: 0;
+  }
+`;
 
 const RootApp = ({ Component, store }) => (
   <Provider store={store}>
     <Component />
+    <GlobalStyle />
   </Provider>
 );
 

@@ -93,6 +93,85 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./lib/api.js":
+/*!********************!*\
+  !*** ./lib/api.js ***!
+  \********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// import axios from 'axios';
+const callNewsData = (q, page, from, to) => {
+  console.log(q, page, from, to);
+  const apiKey = '16e0ef998d404c258e85377281d4d735';
+  const pageSize = 10;
+  const language = 'ko';
+  const sortBy = 'publishedAt';
+  let query = `?pageSize=${pageSize}&language=${language}&apiKey=${apiKey}&sortBy=${sortBy}`;
+  let qData;
+  let pageData;
+  let fromData;
+  let toData;
+
+  if (q === undefined) {
+    qData = 'all';
+  } else {
+    qData = q;
+  }
+
+  query = `${query}&q=${qData}`;
+
+  if (page === undefined) {
+    pageData = 1;
+  } else {
+    pageData = page + 1;
+  }
+
+  query = `${query}&page=${pageData}`;
+
+  if (from === undefined) {
+    const today = new Date();
+    const dd = String(today.getDate());
+    const mm = String(today.getMonth() + 1);
+    const yyyy = today.getFullYear();
+    fromData = `${yyyy}-${mm}-${dd}`;
+  } else {
+    const fromDate = new Date(from);
+    const dd = String(fromDate.getDate());
+    const mm = String(fromDate.getMonth() + 1);
+    const yyyy = fromDate.getFullYear();
+    fromData = `${yyyy}-${mm}-${dd}`;
+  }
+
+  query = `${query}&from=${fromData}`;
+
+  if (to === undefined) {
+    const today = new Date();
+    const dd = String(today.getDate());
+    const mm = String(today.getMonth() + 1);
+    const yyyy = today.getFullYear();
+    toData = `${yyyy}-${mm}-${dd}`;
+  } else {
+    const toDate = new Date(to);
+    const dd = String(toDate.getDate());
+    const mm = String(toDate.getMonth() + 1);
+    const yyyy = toDate.getFullYear();
+    toData = `${yyyy}-${mm}-${dd}`;
+  }
+
+  query = `${query}&to=${toData}`;
+  console.log(query); // http://newsapi.org/v2/everything?q=all&language=ko&from=2020-04-01&to=2020-04-15&sortBy=publishedAt&pageSize=10&page=1&apiKey=16e0ef998d404c258e85377281d4d735
+
+  const url = `http://newsapi.org/v2/everything${query}`;
+  return url;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (callNewsData);
+
+/***/ }),
+
 /***/ "./pages/_app.jsx":
 /*!************************!*\
   !*** ./pages/_app.jsx ***!
@@ -108,7 +187,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_redux_wrapper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_redux_wrapper__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "react-redux");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../redux/store */ "./redux/store.js");
+/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! styled-components */ "styled-components");
+/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../redux/store */ "./redux/store.js");
 var _jsxFileName = "/Users/devsol/Desktop/news_project/pages/_app.jsx";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
@@ -121,6 +202,13 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 
+const GlobalStyle = styled_components__WEBPACK_IMPORTED_MODULE_3__["createGlobalStyle"]`
+  *{
+      margin: 0;
+      padding: 0;
+  }
+`;
+
 const RootApp = ({
   Component,
   store
@@ -129,14 +217,21 @@ const RootApp = ({
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 10,
+    lineNumber: 18,
     columnNumber: 3
   }
 }, __jsx(Component, {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 11,
+    lineNumber: 19,
+    columnNumber: 5
+  }
+}), __jsx(GlobalStyle, {
+  __self: undefined,
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 20,
     columnNumber: 5
   }
 })); // RootApp.propTypes = {
@@ -145,7 +240,7 @@ const RootApp = ({
 // };
 
 
-/* harmony default export */ __webpack_exports__["default"] = (next_redux_wrapper__WEBPACK_IMPORTED_MODULE_1___default()(() => _redux_store__WEBPACK_IMPORTED_MODULE_3__["default"])(RootApp));
+/* harmony default export */ __webpack_exports__["default"] = (next_redux_wrapper__WEBPACK_IMPORTED_MODULE_1___default()(() => _redux_store__WEBPACK_IMPORTED_MODULE_4__["default"])(RootApp));
 
 /***/ }),
 
@@ -174,14 +269,16 @@ const rootReducer = Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"]
 /*!***************************************!*\
   !*** ./redux/reducers/newsReducer.js ***!
   \***************************************/
-/*! exports provided: HELLO_REQUEST, HELLO_REQUEST_STARTED, FETCH_NEWS_DATA_REQUEST, initialState, default */
+/*! exports provided: FETCH_NEWS_DATA_REQUEST, FETCH_NEWS_DATA_REQUEST_STARTED, FETCH_NEWS_DATA_SUCCESS, FETCH_NEWS_DATA_FAIL, SET_CURRENT_PAGE, initialState, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HELLO_REQUEST", function() { return HELLO_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HELLO_REQUEST_STARTED", function() { return HELLO_REQUEST_STARTED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_REQUEST", function() { return FETCH_NEWS_DATA_REQUEST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_REQUEST_STARTED", function() { return FETCH_NEWS_DATA_REQUEST_STARTED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_SUCCESS", function() { return FETCH_NEWS_DATA_SUCCESS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_FAIL", function() { return FETCH_NEWS_DATA_FAIL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_CURRENT_PAGE", function() { return SET_CURRENT_PAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initialState", function() { return initialState; });
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -189,20 +286,50 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const HELLO_REQUEST = 'HELLO_REQUEST';
-const HELLO_REQUEST_STARTED = 'HELLO_REQUEST_STARTED';
 const FETCH_NEWS_DATA_REQUEST = 'FETCH_NEWS_DATA_REQUEST';
+const FETCH_NEWS_DATA_REQUEST_STARTED = 'FETCH_NEWS_DATA_REQUEST_STARTED';
+const FETCH_NEWS_DATA_SUCCESS = 'FETCH_NEWS_DATA_SUCCESS';
+const FETCH_NEWS_DATA_FAIL = 'FETCH_NEWS_DATA_FAIL';
+const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 const initialState = {
-  hello: '',
-  news: []
+  fetchState: undefined,
+  news: [],
+  currentPage: undefined
 };
 
 const newsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case HELLO_REQUEST_STARTED:
+    case FETCH_NEWS_DATA_REQUEST_STARTED:
       {
         return _objectSpread({}, state, {
-          hello: action.value
+          fetchState: 'fetch'
+        });
+      }
+
+    case FETCH_NEWS_DATA_SUCCESS:
+      {
+        const {
+          currentPage
+        } = action;
+        let currentPageData;
+
+        if (currentPage === undefined) {
+          currentPageData = 1;
+        } else {
+          currentPageData = currentPage + 1;
+        }
+
+        return _objectSpread({}, state, {
+          fetchState: 'success',
+          news: action.result,
+          currentPage: currentPageData
+        });
+      }
+
+    case FETCH_NEWS_DATA_FAIL:
+      {
+        return _objectSpread({}, state, {
+          fetchState: 'fail'
         });
       }
 
@@ -234,7 +361,7 @@ __webpack_require__.r(__webpack_exports__);
  // all 함수를 통해 Saga들을 하나로 묶어줄수 있다.
 
 function* rootSaga() {
-  yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["all"])([Object(_news__WEBPACK_IMPORTED_MODULE_1__["watchHello"])()]);
+  yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["all"])([Object(_news__WEBPACK_IMPORTED_MODULE_1__["watchNewsData"])()]);
 }
 
 /***/ }),
@@ -243,33 +370,51 @@ function* rootSaga() {
 /*!*****************************!*\
   !*** ./redux/sagas/news.js ***!
   \*****************************/
-/*! exports provided: hello, watchHello */
+/*! exports provided: fetchNewsData, watchNewsData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hello", function() { return hello; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "watchHello", function() { return watchHello; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchNewsData", function() { return fetchNewsData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "watchNewsData", function() { return watchNewsData; });
 /* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux-saga/effects */ "redux-saga/effects");
 /* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../reducers/newsReducer */ "./redux/reducers/newsReducer.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "axios");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers/newsReducer */ "./redux/reducers/newsReducer.js");
+/* harmony import */ var _lib_api__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../lib/api */ "./lib/api.js");
 
- // import axios from 'axios';
 
-const hello = function* hello() {
+
+
+const fetchNewsData = function* fetchNewsData(action) {
   try {
-    const myName = '박한솔';
-    console.log(myName);
     yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["put"])({
-      type: _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_1__["HELLO_REQUEST_STARTED"],
-      value: myName
+      type: _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_2__["FETCH_NEWS_DATA_REQUEST_STARTED"]
+    });
+    const {
+      currentPage
+    } = action; // console.log(currentPage);
+
+    let q;
+    let from;
+    let to;
+    const url = Object(_lib_api__WEBPACK_IMPORTED_MODULE_3__["default"])(q, currentPage, from, to);
+    const data = yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["call"])([axios__WEBPACK_IMPORTED_MODULE_1___default.a, 'get'], url);
+    const result = data.data;
+    yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["put"])({
+      type: _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_2__["FETCH_NEWS_DATA_SUCCESS"],
+      result,
+      currentPage
     });
   } catch (e) {
-    yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["put"])();
+    yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["put"])({
+      type: _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_2__["FETCH_NEWS_DATA_FAIL"]
+    });
   }
 };
-const watchHello = function* watchHello() {
-  yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["takeEvery"])(_reducers_newsReducer__WEBPACK_IMPORTED_MODULE_1__["HELLO_REQUEST"], hello);
+const watchNewsData = function* watchNewsData() {
+  yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["takeEvery"])(_reducers_newsReducer__WEBPACK_IMPORTED_MODULE_2__["FETCH_NEWS_DATA_REQUEST"], fetchNewsData);
 };
 
 /***/ }),
@@ -314,6 +459,17 @@ sagaMiddleware.run(_sagas__WEBPACK_IMPORTED_MODULE_4__["default"]);
 
 module.exports = __webpack_require__(/*! private-next-pages/_app.jsx */"./pages/_app.jsx");
 
+
+/***/ }),
+
+/***/ "axios":
+/*!************************!*\
+  !*** external "axios" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("axios");
 
 /***/ }),
 
@@ -391,6 +547,17 @@ module.exports = require("redux-saga");
 /***/ (function(module, exports) {
 
 module.exports = require("redux-saga/effects");
+
+/***/ }),
+
+/***/ "styled-components":
+/*!************************************!*\
+  !*** external "styled-components" ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("styled-components");
 
 /***/ })
 

@@ -2,9 +2,6 @@
 /* eslint-disable react/prop-types */
 import React, { memo } from 'react';
 import Styled from 'styled-components';
-import {
-  useSelector,
-} from 'react-redux';
 
 const Header = Styled.div`
   width:100%;
@@ -25,50 +22,40 @@ const Ul = Styled.ul`
   padding: 0;
   margin: 0;
 `;
+const Row = Styled.div`
+  padding:10px;
+`;
+const menu = [
+  { url: '/', name: '최신기사' },
+  { url: '/', name: '비즈니스' },
+  { url: '/', name: '엔터테인먼트' },
+  { url: '/', name: '건강' },
+  { url: '/', name: '과학' },
+  { url: '/', name: '스포츠' },
+  { url: '/', name: '기술' },
+];
 
 const Layout = memo((props) => {
   const { children } = props;
-  const hello = useSelector((state) => state.news);
-
   return (
     <>
-      {hello.hello === ''
-        ? 'loading'
-        : (
-          <>
-            <Header>
-              <Ul>
-                <Li>
-                  <AComponent href="#">전체</AComponent>
-                </Li>
-                <Li>
-                  <AComponent href="#">비즈니스</AComponent>
-                </Li>
-                <Li>
-                  <AComponent href="#">엔터테인먼트</AComponent>
-                </Li>
-                <Li>
-                  <AComponent href="#">건강</AComponent>
-                </Li>
-                <Li>
-                  <AComponent href="#">과학</AComponent>
-                </Li>
-                <Li>
-                  <AComponent href="#">스포츠</AComponent>
-                </Li>
-                <Li>
-                  <AComponent href="#">기술</AComponent>
-                </Li>
-              </Ul>
-            </Header>
-            <div>
-              { children }
-            </div>
-            <div>
-              Footer
-            </div>
-          </>
-        )}
+      <Header>
+        <Ul>
+          {menu.map((v) => (
+            <Li key={v.name}>
+              <AComponent href={v.url}>{v.name}</AComponent>
+            </Li>
+          ))}
+        </Ul>
+      </Header>
+      <article>
+        <Row>
+          { children }
+        </Row>
+      </article>
+      <div>
+        Footer
+      </div>
     </>
   );
 });
