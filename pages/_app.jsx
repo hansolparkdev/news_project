@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 // import PropTypes from 'prop-types';
 import { createGlobalStyle } from 'styled-components';
 import store from '../redux/store';
+import 'react-day-picker/lib/style.css';
 
 const GlobalStyle = createGlobalStyle`
   *{

@@ -31,7 +31,7 @@ const Pagination = (props) => {
         <Li
           key={`${v + i}`}
         >
-          <Button type="button" onClick={() => onPageChange(i)}>{v}</Button>
+          <Button type="button" onClick={() => onPageChange(i + 1)}>{v}</Button>
         </Li>
       ))}
     </Ul>

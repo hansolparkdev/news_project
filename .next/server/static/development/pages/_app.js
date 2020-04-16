@@ -104,7 +104,6 @@ module.exports =
 __webpack_require__.r(__webpack_exports__);
 // import axios from 'axios';
 const callNewsData = (q, page, from, to) => {
-  console.log(q, page, from, to);
   const apiKey = '16e0ef998d404c258e85377281d4d735';
   const pageSize = 10;
   const language = 'ko';
@@ -115,7 +114,7 @@ const callNewsData = (q, page, from, to) => {
   let fromData;
   let toData;
 
-  if (q === undefined) {
+  if (q === undefined || q === '') {
     qData = 'all';
   } else {
     qData = q;
@@ -126,7 +125,7 @@ const callNewsData = (q, page, from, to) => {
   if (page === undefined) {
     pageData = 1;
   } else {
-    pageData = page + 1;
+    pageData = page;
   }
 
   query = `${query}&page=${pageData}`;
@@ -161,14 +160,24 @@ const callNewsData = (q, page, from, to) => {
     toData = `${yyyy}-${mm}-${dd}`;
   }
 
-  query = `${query}&to=${toData}`;
-  console.log(query); // http://newsapi.org/v2/everything?q=all&language=ko&from=2020-04-01&to=2020-04-15&sortBy=publishedAt&pageSize=10&page=1&apiKey=16e0ef998d404c258e85377281d4d735
+  query = `${query}&to=${toData}`; // http://newsapi.org/v2/everything?q=all&language=ko&from=2020-04-01&to=2020-04-15&sortBy=publishedAt&pageSize=10&page=1&apiKey=16e0ef998d404c258e85377281d4d735
 
   const url = `http://newsapi.org/v2/everything${query}`;
   return url;
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (callNewsData);
+
+/***/ }),
+
+/***/ "./node_modules/react-day-picker/lib/style.css":
+/*!*****************************************************!*\
+  !*** ./node_modules/react-day-picker/lib/style.css ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
 
 /***/ }),
 
@@ -190,6 +199,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! styled-components */ "styled-components");
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../redux/store */ "./redux/store.js");
+/* harmony import */ var react_day_picker_lib_style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-day-picker/lib/style.css */ "./node_modules/react-day-picker/lib/style.css");
+/* harmony import */ var react_day_picker_lib_style_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_day_picker_lib_style_css__WEBPACK_IMPORTED_MODULE_5__);
 var _jsxFileName = "/Users/devsol/Desktop/news_project/pages/_app.jsx";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
@@ -199,6 +210,7 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
  // import PropTypes from 'prop-types';
+
 
 
 
@@ -217,21 +229,21 @@ const RootApp = ({
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 18,
+    lineNumber: 19,
     columnNumber: 3
   }
 }, __jsx(Component, {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 19,
+    lineNumber: 20,
     columnNumber: 5
   }
 }), __jsx(GlobalStyle, {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 20,
+    lineNumber: 21,
     columnNumber: 5
   }
 })); // RootApp.propTypes = {
@@ -269,7 +281,7 @@ const rootReducer = Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"]
 /*!***************************************!*\
   !*** ./redux/reducers/newsReducer.js ***!
   \***************************************/
-/*! exports provided: FETCH_NEWS_DATA_REQUEST, FETCH_NEWS_DATA_REQUEST_STARTED, FETCH_NEWS_DATA_SUCCESS, FETCH_NEWS_DATA_FAIL, SET_CURRENT_PAGE, initialState, default */
+/*! exports provided: FETCH_NEWS_DATA_REQUEST, FETCH_NEWS_DATA_REQUEST_STARTED, FETCH_NEWS_DATA_SUCCESS, FETCH_NEWS_DATA_FAIL, CHANGE_SEARCH_VALUE, CHANGE_FROM_DATE_VALUE, CHANGE_TO_DATE_VALUE, initialState, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -278,7 +290,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_REQUEST_STARTED", function() { return FETCH_NEWS_DATA_REQUEST_STARTED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_SUCCESS", function() { return FETCH_NEWS_DATA_SUCCESS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_NEWS_DATA_FAIL", function() { return FETCH_NEWS_DATA_FAIL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_CURRENT_PAGE", function() { return SET_CURRENT_PAGE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CHANGE_SEARCH_VALUE", function() { return CHANGE_SEARCH_VALUE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CHANGE_FROM_DATE_VALUE", function() { return CHANGE_FROM_DATE_VALUE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CHANGE_TO_DATE_VALUE", function() { return CHANGE_TO_DATE_VALUE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initialState", function() { return initialState; });
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -290,11 +304,16 @@ const FETCH_NEWS_DATA_REQUEST = 'FETCH_NEWS_DATA_REQUEST';
 const FETCH_NEWS_DATA_REQUEST_STARTED = 'FETCH_NEWS_DATA_REQUEST_STARTED';
 const FETCH_NEWS_DATA_SUCCESS = 'FETCH_NEWS_DATA_SUCCESS';
 const FETCH_NEWS_DATA_FAIL = 'FETCH_NEWS_DATA_FAIL';
-const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+const CHANGE_SEARCH_VALUE = 'CHANGE_SEARCH_VALUE';
+const CHANGE_FROM_DATE_VALUE = 'CHANGE_FROM_DATE_VALUE';
+const CHANGE_TO_DATE_VALUE = 'CHANGE_TO_DATE_VALUE';
 const initialState = {
   fetchState: undefined,
   news: [],
-  currentPage: undefined
+  currentPage: undefined,
+  searchValue: '',
+  from: undefined,
+  to: undefined
 };
 
 const newsReducer = (state = initialState, action) => {
@@ -316,7 +335,7 @@ const newsReducer = (state = initialState, action) => {
         if (currentPage === undefined) {
           currentPageData = 1;
         } else {
-          currentPageData = currentPage + 1;
+          currentPageData = currentPage;
         }
 
         return _objectSpread({}, state, {
@@ -330,6 +349,36 @@ const newsReducer = (state = initialState, action) => {
       {
         return _objectSpread({}, state, {
           fetchState: 'fail'
+        });
+      }
+
+    case CHANGE_SEARCH_VALUE:
+      {
+        const {
+          searchValue
+        } = action;
+        return _objectSpread({}, state, {
+          searchValue
+        });
+      }
+
+    case CHANGE_FROM_DATE_VALUE:
+      {
+        const {
+          fromData
+        } = action;
+        return _objectSpread({}, state, {
+          from: fromData
+        });
+      }
+
+    case CHANGE_TO_DATE_VALUE:
+      {
+        const {
+          toData
+        } = action;
+        return _objectSpread({}, state, {
+          to: toData
         });
       }
 
@@ -393,12 +442,12 @@ const fetchNewsData = function* fetchNewsData(action) {
       type: _reducers_newsReducer__WEBPACK_IMPORTED_MODULE_2__["FETCH_NEWS_DATA_REQUEST_STARTED"]
     });
     const {
-      currentPage
-    } = action; // console.log(currentPage);
-
-    let q;
-    let from;
-    let to;
+      currentPage,
+      searchValue,
+      from,
+      to
+    } = action;
+    const q = searchValue;
     const url = Object(_lib_api__WEBPACK_IMPORTED_MODULE_3__["default"])(q, currentPage, from, to);
     const data = yield Object(redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__["call"])([axios__WEBPACK_IMPORTED_MODULE_1___default.a, 'get'], url);
     const result = data.data;

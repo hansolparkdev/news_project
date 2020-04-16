@@ -9,12 +9,11 @@ import newsDataUrl from '../../lib/api';
 export const fetchNewsData = function* fetchNewsData(action) {
   try {
     yield put({ type: FETCH_NEWS_DATA_REQUEST_STARTED });
-    const { currentPage } = action;
-    // console.log(currentPage);
-    let q;
-    let from;
-    let to;
-
+    const {
+      currentPage, searchValue,
+      from, to,
+    } = action;
+    const q = searchValue;
     const url = newsDataUrl(q, currentPage, from, to);
     const data = yield call([axios, 'get'], url);
     const result = data.data;
