@@ -6,7 +6,7 @@
   "dependencies": {
     "@zeit/next-typescript": "^1.1.1",
     "axios": "^0.19.2",
-    "next": "^9.3.4",
+    "next": "^13.0.2",
     "next-redux-wrapper": "^5.0.0",
     "nextjs": "^0.0.3",
     "prop-types": "^15.7.2",
